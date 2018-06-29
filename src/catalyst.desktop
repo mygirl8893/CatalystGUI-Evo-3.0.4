@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Catalyst
+GenericName=Catalyst
+Comment=Catalyst GUI wallet
+Exec=catalyst %U
+Terminal=false
+Type=Application
+Icon=parsicoin
+MimeType=x-scheme-handler/catalyst;
+Categories=Internet;cryptocurrency;
+Version=0.9.9
+Name[en_US]=catalyst
