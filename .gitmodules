@@ -1,0 +1,6 @@
+[submodule "cryptonote"]
+	path = cryptonote
+	url = https://github.com/CatalystCash/Catalyst-Evo.git
+[submodule "libqrencode"]
+	path = libqrencode
+	url = https://github.com/FndNur1Labs/libqrencode.git
