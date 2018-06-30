@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Confirm sending %1 PARS</string>
+   <string>Confirm sending %1 XAT</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
