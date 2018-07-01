@@ -98,7 +98,7 @@ void Settings::load() {
   }
 
   QStringList defaultNodesList;
-  defaultNodesList << "seed1.catalyst.cash:9085" << "seed2.catalyst.cash:9085"; 
+  defaultNodesList << "seed1.catalyst.cash:5290" << "seed2.catalyst.cash:5290"; 
   if (!m_settings.contains(OPTION_RPCNODES)) {
     setRpcNodesList(QStringList() << defaultNodesList);
   } else {

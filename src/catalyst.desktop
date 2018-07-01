@@ -9,5 +9,5 @@ Type=Application
 Icon=parsicoin
 MimeType=x-scheme-handler/catalyst;
 Categories=Internet;cryptocurrency;
-Version=0.9.9
+Version=3.0.5
 Name[en_US]=catalyst
