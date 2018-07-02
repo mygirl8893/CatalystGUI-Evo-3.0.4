@@ -7,7 +7,7 @@
 #include <QNetworkReply>
 #include <QUrl>
 
-const static QString PARSICOIN_UPDATE_URL = "http://nur1labs.net/download/update.txt";
+const static QString PARSICOIN_UPDATE_URL = "http://catalyst.cash/download/update.txt";
 
 class Updater : public QObject
 {

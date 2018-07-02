@@ -98,7 +98,7 @@ void Settings::load() {
   }
 
   QStringList defaultNodesList;
-  defaultNodesList << "seed1.catalyst.cash:5290" << "seed2.catalyst.cash:5290"<< "0.0.0.0:5290"; 
+  defaultNodesList << "seed1.catalyst.cash:5290" << "seed2.catalyst.cash:5290"; 
   if (!m_settings.contains(OPTION_RPCNODES)) {
     setRpcNodesList(QStringList() << defaultNodesList);
   } else {
@@ -260,7 +260,7 @@ QString Settings::getCurrentRemoteNode() const {
         remotenode = m_settings.value(OPTION_REMOTE_NODE).toString();
 	}
 	else {
-		remotenode = "seed1.catalyst.cash:9085";
+		remotenode = "hq.nur1labs.org:5290";
     }
     return remotenode;
 }

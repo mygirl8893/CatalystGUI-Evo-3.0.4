@@ -97,7 +97,7 @@ void DepositsFrame::reset() {
 void DepositsFrame::depositClicked() {
   quint64 amount = CurrencyAdapter::instance().parseAmount(m_ui->m_amountSpin->cleanText());
   if (amount == 0 || amount + CurrencyAdapter::instance().getMinimumFee() > WalletAdapter::instance().getActualBalance()) {
-    QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("You don't have enough balance in your account!"), QtCriticalMsg));
+    QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("You don't have enough balance in your main account!"), QtCriticalMsg));
     return;
   }
 
@@ -132,6 +132,7 @@ void DepositsFrame::withdrawClicked() {
   QModelIndexList unlockedDepositIndexList = DepositModel::instance().match(DepositModel::instance().index(0, 0),
     DepositModel::ROLE_STATE, DepositModel::STATE_UNLOCKED, -1);
   if (unlockedDepositIndexList.isEmpty()) {
+    QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("You don't have enough balance in your unlock deposit!"), QtCriticalMsg));
     return;
   }
 
