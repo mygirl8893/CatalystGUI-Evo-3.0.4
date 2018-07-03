@@ -97,7 +97,7 @@ void DepositsFrame::reset() {
 void DepositsFrame::depositClicked() {
   quint64 amount = CurrencyAdapter::instance().parseAmount(m_ui->m_amountSpin->cleanText());
   if (amount == 0 || amount + CurrencyAdapter::instance().getMinimumFee() > WalletAdapter::instance().getActualBalance()) {
-    QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("You don't have enough balance in your main account!"), QtCriticalMsg));
+    QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("Don't have balance or minium term one month!"), QtCriticalMsg));
     return;
   }
 
