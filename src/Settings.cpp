@@ -5,7 +5,9 @@
 #include <QSettings>
 #include <QStandardPaths>
 #include <QTextCodec>
+
 #include <common/Util.h>
+
 #include "CommandLineParser.h"
 #include "CurrencyAdapter.h"
 #include "Settings.h"
@@ -62,7 +64,6 @@ void Settings::load() {
     if (!m_settings.contains(OPTION_DAEMON_PORT)) {
          m_daemonPort = CryptoNote::RPC_DEFAULT_PORT;
     }
-
   } else {
     m_addressBookFile = getDataDir().absoluteFilePath(QCoreApplication::applicationName() + ".addressbook");
   }
@@ -84,6 +85,7 @@ void Settings::load() {
   }
 
   QStringList defaultPoolList;
+  //defaultPoolList << "xdn.miner.center:4555" << "duckpool.mooo.com:2222" << "xdn.poolto.be:11010";
   defaultPoolList << "pool.catalyst.cash:1333";
   if (!m_settings.contains(OPTION_MINING_POOLS)) {
     setMiningPoolList(QStringList() << defaultPoolList);
@@ -211,6 +213,7 @@ QStringList Settings::getMiningPoolList() const {
   if (m_settings.contains(OPTION_MINING_POOLS)) {
     res << m_settings.value(OPTION_MINING_POOLS).toVariant().toStringList();
   }
+
   return res;
 }
 
@@ -377,7 +380,7 @@ void Settings::setWalletFile(const QString& _file) {
 
 void Settings::setEncrypted(bool _encrypted) {
   if (isEncrypted() != _encrypted) {
-    m_settings.insert("encrypted", _encrypted);
+    m_settings.insert(OPTION_ENCRYPTED, _encrypted);
     saveSettings();
   }
 }
@@ -464,6 +467,7 @@ void Settings::setMiningPoolList(const QStringList &_miningPoolList) {
   if (getMiningPoolList() != _miningPoolList) {
     m_settings.insert(OPTION_MINING_POOLS, QJsonArray::fromStringList(_miningPoolList));
   }
+
   saveSettings();
 }
 

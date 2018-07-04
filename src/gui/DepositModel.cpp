@@ -148,8 +148,9 @@ QModelIndex DepositModel::parent(const QModelIndex& _index) const {
   return QModelIndex();
 }
 
-qreal DepositModel::calculateRate(quint64 _amount, quint64 _interest) {
-  return (static_cast<qreal>(_interest)) / _amount;
+qreal DepositModel::calculateRate(quint64 _amount, quint64 _interest, quint32 _term) {
+  quint64 termInSeconds = _term * CurrencyAdapter::instance().getDifficultyTarget();
+  return (static_cast<qreal>(_interest)) / _amount * (static_cast<qreal>(YEAR_SECONDS) / termInSeconds);
 }
 
 QVariant DepositModel::getDisplayRole(const QModelIndex& _index) const {
@@ -177,8 +178,8 @@ QVariant DepositModel::getDisplayRole(const QModelIndex& _index) const {
     quint64 amount = _index.data(ROLE_DEPOSIT_AMOUNT).value<quint64>();
     quint64 interest = _index.data(ROLE_DEPOSIT_INTEREST).value<quint64>();
     quint32 term = _index.data(ROLE_DEPOSIT_TERM).value<quint32>();
-    qreal termRate = calculateRate(amount, interest);
-    return QString("%1 %").arg(QString::number(termRate * 100, 'f', 2));
+    qreal yearRate = calculateRate(amount, interest, term);
+    return QString("%1 %").arg(QString::number(yearRate * 100, 'f', 2));
   }
   case COLUMN_TERM:
     return _index.data(ROLE_DEPOSIT_TERM);

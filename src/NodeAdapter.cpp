@@ -95,7 +95,7 @@ NodeAdapter::NodeAdapter() : QObject(), m_node(nullptr), m_nodeInitializerThread
 NodeAdapter::~NodeAdapter() {
 }
 
-quintptr NodeAdapter::getPeerCount() {
+quintptr NodeAdapter::getPeerCount() const {
   Q_ASSERT(m_node != nullptr);
   return m_node->getPeerCount();
 }
@@ -123,7 +123,7 @@ bool NodeAdapter::init() {
   Q_ASSERT(m_node == nullptr);
 
   QString connection = Settings::instance().getConnection();
-
+  
   if(connection.compare("embedded") == 0) {
 
       m_node = nullptr;
@@ -195,7 +195,6 @@ bool NodeAdapter::init() {
             m_node = nullptr;
             return initInProcessNode();
         }
-
 }
 
 quint64 NodeAdapter::getLastKnownBlockHeight() const {

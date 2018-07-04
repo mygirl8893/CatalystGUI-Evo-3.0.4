@@ -5,6 +5,7 @@
 
 #include <INode.h>
 #include <IWalletLegacy.h>
+
 #include "CryptoNoteWrapper.h"
 
 namespace CryptoNote {
@@ -28,7 +29,7 @@ class NodeAdapter : public QObject, public INodeCallback {
 public:
   static NodeAdapter& instance();
 
-  quintptr getPeerCount();
+  quintptr getPeerCount() const;
   std::string convertPaymentId(const QString& _payment_id_string) const;
   QString extractPaymentId(const std::string& _extra) const;
   CryptoNote::IWalletLegacy* createWallet() const;

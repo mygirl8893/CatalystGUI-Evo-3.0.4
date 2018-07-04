@@ -27,7 +27,6 @@
 using namespace WalletGui;
 
 int main(int argc, char* argv[]) {
-
   QApplication app(argc, argv);
   app.setApplicationName(CurrencyAdapter::instance().getCurrencyName() + "wallet");
   app.setApplicationVersion(Settings::instance().getVersion());
@@ -157,7 +156,9 @@ int main(int argc, char* argv[]) {
   if (!NodeAdapter::instance().init()) {
     return 0;
   }
+
   splash->finish(&MainWindow::instance());
+
   Updater d;
     d.checkForUpdate();
   MainWindow::instance().show();

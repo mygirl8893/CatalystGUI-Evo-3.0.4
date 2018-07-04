@@ -39,8 +39,7 @@ public:
   QVariant data(const QModelIndex& _index, int _role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
   QModelIndex index(int _row, int _column, const QModelIndex& _parent = QModelIndex()) const Q_DECL_OVERRIDE;
   QModelIndex	parent(const QModelIndex& _index) const Q_DECL_OVERRIDE;
-  static qreal calculateRate(quint64 _amount, //amount invested (in coin minimum increments)
-                             quint64 _interest); //interest earned (in coin minimum increments)
+  static qreal calculateRate(quint64 _amount, quint64 _interest, quint32 _term);
 
 private:
   quint32 m_depositCount;

@@ -190,7 +190,7 @@ public:
     return m_node.getLastLocalBlockTimestamp();
   }
 
-  uint64_t getPeerCount() {
+  uint64_t getPeerCount() const override {
     return m_node.getPeerCount();
   }
 
@@ -437,15 +437,16 @@ public:
     m_core(currency, &m_protocolHandler, logManager, true),
     m_nodeServer(m_dispatcher, m_protocolHandler, logManager),
     m_node(m_core, m_protocolHandler) {
-       CryptoNote::Checkpoints checkpoints(logManager);
-       for (const CryptoNote::CheckpointData& checkpoint : CryptoNote::CHECKPOINTS) {
-          checkpoints.add_checkpoint(checkpoint.height, checkpoint.blockId);
-       }
-       if (!Settings::instance().isTestnet()) {
-           m_core.set_checkpoints(std::move(checkpoints));
-       }
-       m_core.set_cryptonote_protocol(&m_protocolHandler);
-       m_protocolHandler.set_p2p_endpoint(&m_nodeServer);
+
+    m_core.set_cryptonote_protocol(&m_protocolHandler);
+    m_protocolHandler.set_p2p_endpoint(&m_nodeServer);
+    CryptoNote::Checkpoints checkpoints(logManager);
+    for (const CryptoNote::CheckpointData& checkpoint : CryptoNote::CHECKPOINTS) {
+       checkpoints.add_checkpoint(checkpoint.height, checkpoint.blockId);
+    }
+    if (!Settings::instance().isTestnet()) {
+       m_core.set_checkpoints(std::move(checkpoints));
+    }
   }
 
   ~InprocessNode() override {
@@ -475,8 +476,8 @@ public:
 
     m_nodeServer.run();
     m_nodeServer.deinit();
-    m_core.deinit();
     m_node.shutdown();
+    m_core.deinit();
   }
 
   void deinit() override {
@@ -515,8 +516,8 @@ public:
     return m_node.getLastLocalBlockTimestamp();
   }
 
-  uint64_t getPeerCount() {
-    return m_nodeServer.get_connections_count();
+  uint64_t getPeerCount() const override {
+    return m_node.getPeerCount();
   }
 
   uint64_t getDifficulty() {
@@ -580,7 +581,6 @@ private:
   std::future<bool> m_nodeServerFuture;
 
   void peerCountUpdated(size_t count) {
-    //m_callback.peerCountUpdated(*this, count);
     m_callback.peerCountUpdated(*this, m_nodeServer.get_connections_count() - 1);
   }
 
@@ -593,7 +593,7 @@ private:
   }
 };
 
-Node* createRpcNode(const CryptoNote::Currency& currency, INodeCallback& callback, Logging::LoggerManager& logManager,  const std::string& nodeHost, unsigned short nodePort) {
+Node* createRpcNode(const CryptoNote::Currency& currency, INodeCallback& callback, Logging::LoggerManager& logManager, const std::string& nodeHost, unsigned short nodePort) {
   return new RpcNode(currency, callback, logManager, nodeHost, nodePort);
 }
 

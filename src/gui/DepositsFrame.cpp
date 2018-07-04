@@ -106,13 +106,12 @@ void DepositsFrame::depositClicked() {
 }
 
 void DepositsFrame::depositParamsChanged() {
-  quint64 amount = CurrencyAdapter::instance().parseAmount(m_ui->m_amountSpin->cleanText());
+   quint64 amount = CurrencyAdapter::instance().parseAmount(m_ui->m_amountSpin->cleanText());
   quint32 term = m_ui->m_timeSpin->value();
-  
-  quint64 interest = CurrencyAdapter::instance().calculateInterest(amount, term, NodeAdapter::instance().getLastKnownBlockHeight());
-  qreal termRate = DepositModel::calculateRate(amount, interest);
+  quint64 interest = CurrencyAdapter::instance().calculateInterest(amount, term);
+  qreal rate = DepositModel::calculateRate(amount, interest, term);
   m_ui->m_interestLabel->setText(QString("+ %1 %2 (%3 %)").arg(CurrencyAdapter::instance().formatAmount(interest)).
-    arg(CurrencyAdapter::instance().getCurrencyTicker().toUpper()).arg(QString::number(termRate * 100, 'f', 2)));
+    arg(CurrencyAdapter::instance().getCurrencyTicker().toUpper()).arg(QString::number(rate * 100, 'f', 2)));
 }
 
 void DepositsFrame::showDepositDetails(const QModelIndex& _index) {
