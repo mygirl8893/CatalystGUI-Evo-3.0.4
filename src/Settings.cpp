@@ -263,7 +263,7 @@ QString Settings::getCurrentRemoteNode() const {
         remotenode = m_settings.value(OPTION_REMOTE_NODE).toString();
 	}
 	else {
-		remotenode = "hq.nur1labs.org:5290";
+		remotenode = "node1.catalyst.cash:5295";
     }
     return remotenode;
 }
