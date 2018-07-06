@@ -54,11 +54,11 @@ void Settings::load() {
     }
 
     if (!m_settings.contains(OPTION_LANGUAGE)) {
-         m_currentLang = "uk";
+         m_currentLang = "en";
     }
 
     if (!m_settings.contains(OPTION_CONNECTION)) {
-         m_connectionMode = "remote";
+         m_connectionMode = "auto";
     }
 
     if (!m_settings.contains(OPTION_DAEMON_PORT)) {
@@ -235,7 +235,7 @@ QString Settings::getConnection() const {
         connection = m_settings.value(OPTION_CONNECTION).toString();
     }
     else {
-    connection = "remote"; // default
+    connection = "auto"; // default
     }
     return connection;
 }
