@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QFrame>
+#include <IWallet.h>
+#include <IWalletLegacy.h>
 
 namespace Ui {
 class DepositsFrame;

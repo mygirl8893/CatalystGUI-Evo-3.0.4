@@ -50,20 +50,18 @@ DepositsFrame::DepositsFrame(QWidget* _parent) : QFrame(_parent), m_ui(new Ui::D
   m_ui->m_amountSpin->setMinimum(CurrencyAdapter::instance().formatAmount(CurrencyAdapter::instance().getDepositMinAmount()).toDouble());
   m_ui->m_amountSpin->setDecimals(CurrencyAdapter::instance().getNumberOfDecimalPlaces());
   m_ui->m_depositView->setModel(m_depositModel.data());
-  m_ui->m_depositView->sortByColumn(5, Qt::SortOrder::AscendingOrder); //COLUMN_UNLOCK_HEIGHT, ascending
 
   m_ui->m_tickerLabel1->setText(CurrencyAdapter::instance().getCurrencyTicker().toUpper());
   m_ui->m_tickerLabel2->setText(CurrencyAdapter::instance().getCurrencyTicker().toUpper());
   m_ui->m_tickerLabel3->setText(CurrencyAdapter::instance().getCurrencyTicker().toUpper());
-  m_ui->m_feeLabel->setText(tr("%1 %2").arg(CurrencyAdapter::instance().formatAmount(CurrencyAdapter::instance().getMinimumFee())).arg(CurrencyAdapter::instance().getCurrencyTicker().toUpper()));
 
   connect(&WalletAdapter::instance(), &WalletAdapter::walletActualDepositBalanceUpdatedSignal,
     this, &DepositsFrame::actualDepositBalanceUpdated, Qt::QueuedConnection);
   connect(&WalletAdapter::instance(), &WalletAdapter::walletPendingDepositBalanceUpdatedSignal,
     this, &DepositsFrame::pendingDepositBalanceUpdated, Qt::QueuedConnection);
-  connect(&WalletAdapter::instance(), &WalletAdapter::walletActualBalanceUpdatedSignal,
-    this, &DepositsFrame::walletActualBalanceUpdated, Qt::QueuedConnection);
   connect(&WalletAdapter::instance(), &WalletAdapter::walletCloseCompletedSignal, this, &DepositsFrame::reset,
+    Qt::QueuedConnection);
+  connect(&WalletAdapter::instance(), &WalletAdapter::walletActualBalanceUpdatedSignal, this, &DepositsFrame::walletActualBalanceUpdated,
     Qt::QueuedConnection);
 
   reset();
@@ -84,11 +82,6 @@ void DepositsFrame::pendingDepositBalanceUpdated(quint64 _balance) {
   m_ui->m_totalDepositLabel->setText(CurrencyAdapter::instance().formatAmount(_balance + actualDepositBalance));
 }
 
-void DepositsFrame::walletActualBalanceUpdated(quint64 _balance) {
-  m_ui->m_balanceLabel->setText(CurrencyAdapter::instance().formatAmount(_balance));
-}
-
-
 void DepositsFrame::reset() {
   actualDepositBalanceUpdated(0);
   pendingDepositBalanceUpdated(0);
@@ -97,7 +90,7 @@ void DepositsFrame::reset() {
 void DepositsFrame::depositClicked() {
   quint64 amount = CurrencyAdapter::instance().parseAmount(m_ui->m_amountSpin->cleanText());
   if (amount == 0 || amount + CurrencyAdapter::instance().getMinimumFee() > WalletAdapter::instance().getActualBalance()) {
-    QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("Don't have balance or minium term one month!"), QtCriticalMsg));
+    QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("You don't have enough balance in your account!"), QtCriticalMsg));
     return;
   }
 
@@ -106,9 +99,9 @@ void DepositsFrame::depositClicked() {
 }
 
 void DepositsFrame::depositParamsChanged() {
-   quint64 amount = CurrencyAdapter::instance().parseAmount(m_ui->m_amountSpin->cleanText());
+  quint64 amount = CurrencyAdapter::instance().parseAmount(m_ui->m_amountSpin->cleanText());
   quint32 term = m_ui->m_timeSpin->value();
-  quint64 interest = CurrencyAdapter::instance().calculateInterest(amount, term);
+  quint64 interest = CurrencyAdapter::instance().calculateInterest(amount, term, NodeAdapter::instance().getLastKnownBlockHeight());
   qreal rate = DepositModel::calculateRate(amount, interest, term);
   m_ui->m_interestLabel->setText(QString("+ %1 %2 (%3 %)").arg(CurrencyAdapter::instance().formatAmount(interest)).
     arg(CurrencyAdapter::instance().getCurrencyTicker().toUpper()).arg(QString::number(rate * 100, 'f', 2)));
@@ -131,7 +124,6 @@ void DepositsFrame::withdrawClicked() {
   QModelIndexList unlockedDepositIndexList = DepositModel::instance().match(DepositModel::instance().index(0, 0),
     DepositModel::ROLE_STATE, DepositModel::STATE_UNLOCKED, -1);
   if (unlockedDepositIndexList.isEmpty()) {
-    QCoreApplication::postEvent(&MainWindow::instance(), new ShowMessageEvent(tr("You don't have enough balance in your unlock deposit!"), QtCriticalMsg));
     return;
   }
 
@@ -141,6 +133,10 @@ void DepositsFrame::withdrawClicked() {
   }
 
   WalletAdapter::instance().withdrawUnlockedDeposits(depositIds, CurrencyAdapter::instance().getMinimumFee());
+}
+
+void DepositsFrame::walletActualBalanceUpdated(quint64 _balance) {
+  m_ui->m_balanceLabel->setText(CurrencyAdapter::instance().formatAmount(_balance));
 }
 
 }

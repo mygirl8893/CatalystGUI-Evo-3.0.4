@@ -113,7 +113,7 @@ void MainWindow::connectToSignals() {
 }
 
 void MainWindow::initUi() {
-  setWindowTitle(QString(tr("Catalyst Wallet v0.0.1-beta")).arg(Settings::instance().getVersion()));
+  setWindowTitle(QString(tr("Catalyst Wallet v0.0.2")).arg(Settings::instance().getVersion()));
 #ifdef Q_OS_WIN32
   createTrayIcon();
 #endif

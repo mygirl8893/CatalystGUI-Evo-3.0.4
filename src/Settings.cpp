@@ -62,7 +62,7 @@ void Settings::load() {
     }
 
     if (!m_settings.contains(OPTION_DAEMON_PORT)) {
-         m_daemonPort = CryptoNote::RPC_DEFAULT_PORT;
+         m_daemonPort = RPC_DEFAULT_PORT;
     }
   } else {
     m_addressBookFile = getDataDir().absoluteFilePath(QCoreApplication::applicationName() + ".addressbook");
@@ -77,7 +77,7 @@ void Settings::load() {
   }
 
   if (!m_settings.contains(OPTION_DAEMON_PORT)) {
-        m_settings.insert(OPTION_DAEMON_PORT, CryptoNote::RPC_DEFAULT_PORT); // default daemon port
+        m_settings.insert(OPTION_DAEMON_PORT, RPC_DEFAULT_PORT); // default daemon port
   }
 
   if (!m_settings.contains("tracking")) {

@@ -30,15 +30,15 @@ QString CurrencyAdapter::getCurrencyDisplayName() const {
 }
 
 QString CurrencyAdapter::getCurrencyName() const {
-  return CryptoNote::CRYPTONOTE_NAME;
+  return CRYPTONOTE_NAME;
 }
 
 QString CurrencyAdapter::getCurrencyTicker() const {
   return WALLET_CURRENCY_TICKER;
 }
 
-quint64 CurrencyAdapter::calculateInterest(quint64 _amount, quint32 _term) const {
-  return m_currency.calculateInterest(_amount, _term);
+quint64 CurrencyAdapter::calculateInterest(quint64 _amount, quint32 _term, uint32_t height) const {
+  return m_currency.calculateInterest(_amount, _term, height);
 }
 
 quint64 CurrencyAdapter::getMinimumFee() const {

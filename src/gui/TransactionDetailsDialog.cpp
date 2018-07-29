@@ -1,6 +1,7 @@
 #include <QDateTime>
 
 #include "CurrencyAdapter.h"
+#include "DepositModel.h"
 #include "TransactionDetailsDialog.h"
 #include "TransactionsModel.h"
 #include <IWalletLegacy.h>
@@ -32,20 +33,49 @@ TransactionDetailsDialog::TransactionDetailsDialog(const QModelIndex& _index, QW
   QString feeText = CurrencyAdapter::instance().formatAmount(index.data(TransactionsModel::ROLE_FEE).value<quint64>()) + " " +
     CurrencyAdapter::instance().getCurrencyTicker().toUpper();
 
-  QString state;
-  CryptoNote::WalletLegacyTransaction transaction;
-  CryptoNote::TransactionId transaction_id = index.row();
-  if(WalletAdapter::instance().getTransaction(transaction_id, transaction)) {
-     if(transaction.state == CryptoNote::WalletLegacyTransactionState::Failed)
-        state = tr("Failed");
+  CryptoNote::DepositId depositId = index.data(TransactionsModel::ROLE_DEPOSIT_ID).value<CryptoNote::DepositId>();
 
-     else if(transaction.state == CryptoNote::WalletLegacyTransactionState::Cancelled)
-        state = tr("Cancelled");
+  QString depositInfo;
+  if (depositId != CryptoNote::WALLET_LEGACY_INVALID_DEPOSIT_ID) {
+    QModelIndex depositIndex = DepositModel::instance().index(depositId, 0);
+    QString depositAmount = depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_AMOUNT).data().toString() + " " +
+      CurrencyAdapter::instance().getCurrencyTicker().toUpper();
+    QString depositInterest = depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_INTEREST).data().toString() + " " +
+      CurrencyAdapter::instance().getCurrencyTicker().toUpper();
+    QString depositSum = depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_SUM).data().toString() + " " +
+      CurrencyAdapter::instance().getCurrencyTicker().toUpper();
+    QString depositInfoTemplate =
+      "<span style=\" font-weight:600;\">Deposit info: </span></p><br>\n"
+      "<span style=\" font-weight:600;\">Status: </span>%1</p><br>\n"
+      "<span style=\" font-weight:600;\">Amount: </span>%2</p><br>\n"
+      "<span style=\" font-weight:600;\">PoV: </span>%3</p><br>\n"
+      "<span style=\" font-weight:600;\">Sum: </span>%4</p><br>\n"
+      "<span style=\" font-weight:600;\">Year PoV rate: </span>%5</p><br>\n"
+      "<span style=\" font-weight:600;\">Term: </span>%6</p><br>\n"
+      "<span style=\" font-weight:600;\">Unlock height: </span>%7</p><br>\n"
+      "<span style=\" font-weight:600;\">Expected unlock time: </span>%8</p><br>\n"
+      "<span style=\" font-weight:600;\">Creating transaction: </span>%9</p><br>\n"
+      "<span style=\" font-weight:600;\">Creating height: </span>%10</p><br>\n"
+      "<span style=\" font-weight:600;\">Creating time: </span>%11</p><br>\n"
+      "<span style=\" font-weight:600;\">Spending transaction: </span>%12</p><br>\n"
+      "<span style=\" font-weight:600;\">Spending height: </span>%13</p><br>\n"
+      "<span style=\" font-weight:600;\">Spending time: </span>%14</p><br>\n";
+      depositInfo = depositInfoTemplate.
+          arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_STATE).data().toString()).
+          arg(depositAmount).arg(depositInterest).arg(depositSum).
+          arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_YEAR_RATE).data().toString()).
+          arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_TERM).data().toString()).
+          arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_UNLOCK_HEIGHT).data().toString()).
+          arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_UNLOCK_TIME).data().toString()).
+          arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_CREATRING_TRANSACTION_HASH).data().toString()).
+          arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_CREATING_HEIGHT).data().toString()).
+          arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_CREATING_TIME).data().toString()).
+          arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_SPENDING_TRANSACTION_HASH).data().toString()).
+          arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_SPENDING_HEIGHT).data().toString()).
+          arg(depositIndex.sibling(depositIndex.row(), DepositModel::COLUMN_SPENDING_TIME).data().toString());
   }
-  if(state.isEmpty())
-    state = QString(tr("%n confirmation(s)", "", numberOfConfirmations));
 
-  m_ui->m_detailsBrowser->setHtml(m_detailsTemplate.arg(state).
+  m_ui->m_detailsBrowser->setHtml(m_detailsTemplate.arg(QString("%1 confirmations").arg(numberOfConfirmations)).
     arg(index.sibling(index.row(), TransactionsModel::COLUMN_DATE).data().toString()).arg(index.sibling(index.row(),
     TransactionsModel::COLUMN_ADDRESS).data().toString()).arg(amountText).arg(feeText).
     arg(index.sibling(index.row(), TransactionsModel::COLUMN_PAYMENT_ID).data().toString()).

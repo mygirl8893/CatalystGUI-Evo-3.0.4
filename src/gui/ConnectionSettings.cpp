@@ -42,7 +42,7 @@ void ConnectionSettingsDialog::initConnectionSettings() {
 
  quint16 localDaemonPort = Settings::instance().getCurrentLocalDaemonPort();
     if(localDaemonPort == 0) {
-       localDaemonPort = CryptoNote::RPC_DEFAULT_PORT;
+       localDaemonPort = RPC_DEFAULT_PORT;
     }
     m_ui->m_localDaemonPort->setValue(localDaemonPort);
 

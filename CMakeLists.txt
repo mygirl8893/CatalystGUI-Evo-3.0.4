@@ -13,9 +13,9 @@ set(CRYPTONOTE_LIB cryptonote)
 
 include_directories(${CMAKE_BINARY_DIR}
     src
+    cryptonote/iclass
     cryptonote/class
     cryptonote/modules
-    cryptonote/include
     cryptonote/src
     libqrencode)
 
@@ -91,9 +91,9 @@ set(CRYPTONOTE_SOURCES
   cryptonote/src/crypto/slow-hash.c
   cryptonote/src/crypto/slow-hash.cpp
   cryptonote/src/crypto/tree-hash.c
-  cryptonote/src/core/block/BlockchainIndices.cpp
-  cryptonote/src/core/block/BlockchainMessages.cpp
-  cryptonote/src/core/block/BlockIndex.cpp
+  cryptonote/src/blockchain/BlockchainIndices.cpp
+  cryptonote/src/blockchain/BlockchainMessages.cpp
+  cryptonote/src/blockchain/BlockIndex.cpp
   cryptonote/src/core/CoreConfig.cpp
   cryptonote/src/base/CryptoNoteBasic.cpp
   cryptonote/src/base/CryptoNoteTools.cpp
@@ -102,8 +102,8 @@ set(CRYPTONOTE_SOURCES
   cryptonote/src/core/mine/MinerConfig.cpp
   cryptonote/src/core/trans/Transaction.cpp
   cryptonote/src/core/Account.cpp
-  cryptonote/src/core/block/Blockchain.cpp
-  cryptonote/src/core/block/Checkpoints.cpp
+  cryptonote/src/blockchain/Blockchain.cpp
+  cryptonote/src/blockchain/Checkpoints.cpp
   cryptonote/src/base/CryptoNoteBasicImpl.cpp
   cryptonote/src/core/Core.cpp
   cryptonote/src/base/CryptoNoteFormatUtils.cpp

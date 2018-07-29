@@ -79,10 +79,10 @@ QVariant DepositModel::headerData(int _section, Qt::Orientation _orientation, in
     case COLUMN_AMOUNT:
       return tr("Amount");
     case COLUMN_INTEREST:
-      return tr("Stake");
+      return tr("PoV");
     case COLUMN_SUM:
       return tr("Sum");
-    case COLUMN_TERM_RATE:
+    case COLUMN_YEAR_RATE:
       return tr("Rate");
     case COLUMN_TERM:
       return tr("Term");
@@ -174,7 +174,7 @@ QVariant DepositModel::getDisplayRole(const QModelIndex& _index) const {
   case COLUMN_SUM:
     return CurrencyAdapter::instance().formatAmount(_index.data(ROLE_DEPOSIT_AMOUNT).value<quint64>() +
       _index.data(ROLE_DEPOSIT_INTEREST).value<quint64>());
-  case COLUMN_TERM_RATE: {
+  case COLUMN_YEAR_RATE: {
     quint64 amount = _index.data(ROLE_DEPOSIT_AMOUNT).value<quint64>();
     quint64 interest = _index.data(ROLE_DEPOSIT_INTEREST).value<quint64>();
     quint32 term = _index.data(ROLE_DEPOSIT_TERM).value<quint32>();
@@ -189,7 +189,7 @@ QVariant DepositModel::getDisplayRole(const QModelIndex& _index) const {
       return "-";
     }
 
-    return unlockHeight > 0 ? unlockHeight - 1 : 0;
+    return unlockHeight;
   }
 
   case COLUMN_UNLOCK_TIME: {
@@ -200,7 +200,7 @@ QVariant DepositModel::getDisplayRole(const QModelIndex& _index) const {
         return "-";
       }
 
-      return getExpectedTimeForHeight(unlockHeight).toString("yyyy-MM-dd HH:mm");
+      return getExpectedTimeForHeight(unlockHeight).toString("dd-MM-yy HH:mm");
     } else {
       return QDateTime();
     }
